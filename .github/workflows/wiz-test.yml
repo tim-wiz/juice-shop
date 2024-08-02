@@ -25,7 +25,7 @@ jobs:
          
       - name: Scan Docker Image
         run: |
-         ./wizcli docker scan --image docker.io/tim-cicd-juice-shop:1.0 --policy tim_container_test --policy-hits-only
+         ./wizcli docker scan --image docker.io/tim4wiz/tim-cicd-juice-shop:1.0 --policy tim_container_test --policy-hits-only
          
       - name: Login to Docker Hub
         uses: docker/login-action@v1
