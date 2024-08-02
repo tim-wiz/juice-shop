@@ -44,9 +44,7 @@ jobs:
         uses: actions/checkout@v2
         
       - name: Install Wiz CLI & Authenticate
-        run: |
-         ls
-         cd aws
+        run: |      
          cd aws/terraform-eks-fail
          curl -o wizcli https://wizcli.app.wiz.io/wizcli
          chmod +x wizcli
