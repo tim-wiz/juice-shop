@@ -7,6 +7,26 @@ import { type Request, type Response, type NextFunction } from 'express'
 import { type Captcha } from '../data/types'
 import { CaptchaModel } from '../models/captcha'
 
+function applyOperator (a: number, operator: string, b: number): number {
+  switch (operator) {
+    case '+': return a + b
+    case '-': return a - b
+    case '*': return a * b
+    default: throw new Error('Invalid operator')
+  }
+}
+
+function safeEvalMath (first: number, op1: string, second: number, op2: string, third: number): number {
+  // Respect operator precedence: * binds tighter than + and -
+  if (op1 === '*') {
+    return applyOperator(first * second, op2, third)
+  }
+  if (op2 === '*') {
+    return applyOperator(first, op1, second * third)
+  }
+  return applyOperator(applyOperator(first, op1, second), op2, third)
+}
+
 function captchas () {
   return async (req: Request, res: Response) => {
     const captchaId = req.app.locals.captchaId++
@@ -20,7 +40,7 @@ function captchas () {
     const secondOperator = operators[Math.floor((Math.random() * 3))]
 
     const expression = firstTerm.toString() + firstOperator + secondTerm.toString() + secondOperator + thirdTerm.toString()
-    const answer = eval(expression).toString() // eslint-disable-line no-eval
+    const answer = safeEvalMath(firstTerm, firstOperator, secondTerm, secondOperator, thirdTerm).toString()
 
     const captcha = {
       captchaId,
